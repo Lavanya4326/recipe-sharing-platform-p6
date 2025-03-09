@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 const RecipeCard = ({ recipe }) => {
     const navigate = useNavigate();
     return (
-        <Card onClick={() => navigate(`/recipe/${recipe.id}`)} sx={{ cursor: 'pointer' }}>
+        <Card onClick={() => navigate(`/recipe/${recipe._id}`)} sx={{ cursor: 'pointer' }}>
             <CardActionArea>
                 <CardMedia
                     component="img"

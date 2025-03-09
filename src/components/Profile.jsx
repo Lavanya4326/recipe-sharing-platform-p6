@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
     const navigate = useNavigate();
-    const user = {
+    const user = JSON.parse(localStorage.getItem("user")) || {
         name: 'Kattunga Lavanya',
         email: 'kattungalavanya@gmail.com',
         img: 'https://images.unsplash.com/photo-1601937786313-4b0b7b0d0d0b',
@@ -42,6 +42,8 @@ const Profile = () => {
             </Card>
             <Button
                 onClick={() => {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
                     navigate('/login');
                 }}
                 variant="contained" sx={{ mt: 3, backgroundColor: '#D32F2F', ':hover': { backgroundColor: '#d32f2f' } }}>

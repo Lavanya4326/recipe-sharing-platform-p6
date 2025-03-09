@@ -20,7 +20,7 @@ const Navbar = () => {
                         <ListItemText primary={text} />
                     </ListItem>
                 ))}
-                <ListItem sx={{ cursor: 'pointer', color: 'inherit', textDecoration: 'none' }} button 
+                <ListItem sx={{ cursor: 'pointer', color: 'inherit', textDecoration: 'none' }} button
                     component={Link} to="/login">
                     <ListItemText primary="LogOut" />
                 </ListItem>
@@ -47,7 +47,12 @@ const Navbar = () => {
                         <Button color="inherit" component={Link} to="/home">Home</Button>
                         <Button color="inherit" component={Link} to="/add-recipe">Add Recipe</Button>
                         <Button color="inherit" component={Link} to="/profile">Profile</Button>
-                        <Button color="inherit" component={Link} to="/login">LogOut</Button>
+                        <Button color="inherit" component={Link}
+                            onClick={() => {
+                                localStorage.removeItem('user')
+                                localStorage.removeItem('token')
+                            }}
+                            to="/login">LogOut</Button>
                     </Box>
                 </Toolbar>
             </AppBar>

@@ -1,58 +1,44 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Box, Typography, Card, CardMedia, CardContent } from '@mui/material';
-
-const Recipes = [
-    {
-        id: 1,
-        title: 'Lasagna',
-        description: 'A classic Italian dish featuring layers of pasta, rich meat sauce, creamy béchamel, and melted cheese.',
-        image: 'https://www.gimmesomeoven.com/wp-content/uploads/2020/10/Beef-Stroganoff-Recipe-9.jpg',
-    },
-    {
-        id: 2,
-        title: 'Beef Stroganoff',
-        description: 'A Russian dish consisting of sautéed beef in a creamy mushroom and onion sauce, typically served over noodles or rice.',
-        image: 'https://www.gimmesomeoven.com/wp-content/uploads/2020/10/Beef-Stroganoff-Recipe-9.jpg',
-    },
-    {
-        id: 3,
-        title: 'Apple Pie',
-        description: 'A classic dessert made with a flaky pastry crust filled with spiced apple slices, baked to golden perfection.',
-        image: 'https://www.inspiredtaste.net/wp-content/uploads/2019/11/Homemade-Apple-Pie-From-Scratch-1200.jpg',
-    },
-    {
-        id: 4,
-        title: 'Sushi',
-        description: 'A traditional Japanese dish featuring vinegared rice combined with various ingredients such as raw fish, vegetables, and seaweed.',
-        image: 'https://www.justonecookbook.com/wp-content/uploads/2020/01/Sushi-Rolls-Maki-Sushi-%E2%80%93-Hosomaki-1106-II.jpg',
-    },
-    {
-        id: 5,
-        title: 'Tacos',
-        description: 'A traditional Mexican dish consisting of small hand-sized corn or wheat tortillas topped with a variety of fillings such as beef, pork, chicken, or vegetables.',
-        image: 'https://blog.amigofoods.com/wp-content/uploads/2020/12/tacos-authentic-mexican-food.jpg',
-    }
-];
-
+import { Box, Typography, Card, CardMedia, CardContent, CircularProgress } from '@mui/material';
 
 const RecipeDetails = () => {
     const { id } = useParams();
-    const recipe = Recipes.find((r) => r.id === parseInt(id));
+    const [recipe, setRecipe] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    if (!recipe) {
+    useEffect(() => {
+        const fetchRecipe = async () => {
+            try {
+                const response = await fetch(`https://recipe-sharing-platform-p6-backend.vercel.app/api/recipes/${id}`);
+                if (!response.ok) {
+                    throw new Error('Recipe not found');
+                }
+                const data = await response.json();
+                setRecipe(data);
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchRecipe();
+    }, [id]);
+
+    if (loading) {
         return (
-            <Box
-                sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    minHeight: '100vh',
-                }}
-            >
-                <Typography variant="h4" color="error">
-                    Recipe not found
-                </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
+                <CircularProgress />
+            </Box>
+        );
+    }
+
+    if (error) {
+        return (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
+                <Typography variant="h4" color="error">{error}</Typography>
             </Box>
         );
     }

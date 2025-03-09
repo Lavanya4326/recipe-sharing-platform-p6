@@ -3,28 +3,28 @@ import { Box, TextField, Button, Typography, Card, CardContent, Alert } from '@m
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const LogIn = () => {
+const Register = () => {
+    const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    const handleLogin = async (e) => {
+    const handleRegister = async (e) => {
         e.preventDefault();
         setError('');
 
         try {
-            const response = await axios.post('https://recipe-sharing-platform-p6-backend.vercel.app/api/users/login', {
+            const response = await axios.post('https://recipe-sharing-platform-p6-backend.vercel.app/api/users/register', {
+                name,
                 email,
                 password
             });
 
-            if (response.data.token) {
-                localStorage.setItem('token', response.data.token);
-                localStorage.setItem('user', JSON.stringify(response.data.user));
-                navigate('/home');
+            if (response.data) {
+                navigate('/login');
             } else {
-                setError('Invalid login credentials');
+                setError('Registration failed. Try again.');
             }
         } catch (err) {
             setError(err.response?.data?.message || 'Server error. Try again.');
@@ -36,10 +36,19 @@ const LogIn = () => {
             <Card sx={{ maxWidth: 400, width: '100%', boxShadow: 5, borderRadius: 4 }}>
                 <CardContent>
                     <Typography variant="h4" sx={{ textAlign: 'center', mb: 3, fontWeight: 'bold' }}>
-                        Login
+                        Register
                     </Typography>
                     {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-                    <form onSubmit={handleLogin}>
+                    <form onSubmit={handleRegister}>
+                        <TextField
+                            label="Full Name"
+                            variant="outlined"
+                            fullWidth
+                            margin="normal"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            required
+                        />
                         <TextField
                             label="Email"
                             variant="outlined"
@@ -64,11 +73,11 @@ const LogIn = () => {
                             mt: 3,
                             width: '100%',
                         }} fullWidth>
-                            Log In
+                            Register
                         </Button>
                         <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
-                            <Button color="primary" onClick={() => navigate('/register')}>
-                                Register
+                            <Button variant="text" onClick={() => navigate('/login')}>
+                                Already have an account? Log In
                             </Button>
                         </Box>
                     </form>
@@ -78,4 +87,4 @@ const LogIn = () => {
     );
 };
 
-export default LogIn;
+export default Register;
